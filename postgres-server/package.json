@@ -1,0 +1,16 @@
+{
+  "name": "postgres-server",
+  "version": "1.0.0",
+  "description": "PostgreSQL server setup for map application",
+  "scripts": {
+    "create-user": "node db-scripts/create-user.js",
+    "start": "docker-compose up -d",
+    "stop": "docker-compose down",
+    "logs": "docker-compose logs -f",
+    "shell": "docker-compose exec postgres bash"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "pg": "^8.11.3"
+  }
+}

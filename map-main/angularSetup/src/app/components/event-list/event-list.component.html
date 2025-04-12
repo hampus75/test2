@@ -1,0 +1,117 @@
+<div class="events-page">
+  <div class="header-logo">
+    <h1>Cykelevenemang</h1>
+    
+    <!-- Debug buttons (you can remove these in production) -->
+    <button (click)="debugEvents()" style="background-color: #f0f0f0; border: 1px solid #ccc; padding: 5px 10px; margin-left: 10px; font-size: 12px;">
+      Debug Events
+    </button>
+    <button (click)="createTestEvent()" style="background-color: #e6f7e6; border: 1px solid #ccc; padding: 5px 10px; margin-left: 10px; font-size: 12px;">
+      Create Test Event
+    </button>
+    <button (click)="testLocalStorage()" style="background-color: #e6e6f7; border: 1px solid #ccc; padding: 5px 10px; margin-left: 10px; font-size: 12px;">
+      Test Storage
+    </button>
+    <button (click)="resetEvents()" style="background-color: #f7e6e6; border: 1px solid #ccc; padding: 5px 10px; margin-left: 10px; font-size: 12px;">
+      Reset Events
+    </button>
+  </div>
+
+  <!-- Debug info -->
+  <div class="debug-info" style="background-color: #f0f0f0; padding: 10px; margin-bottom: 10px; border-radius: 5px; font-family: monospace;">
+    <p><strong>Debug Info:</strong></p>
+    <p>Total events: {{ events.length }}</p>
+    <p>Month groups: {{ eventsByMonth.length }}</p>
+    <div *ngIf="events.length > 0">
+      <p>First event: {{ events[0].name }} ({{ events[0].id }})</p>
+      <p>Event dates:</p>
+      <ul style="max-height: 150px; overflow-y: auto;">
+        <li *ngFor="let event of events">
+          <span style="font-weight: bold;">{{ event.name }}</span> - {{ event.date }} 
+          <button (click)="deleteEvent(event.id, $event)" style="margin-left: 10px; background: #ffeeee; border: 1px solid #ffcccc; border-radius: 3px; cursor: pointer;">Delete</button>
+        </li>
+      </ul>
+    </div>
+    <div *ngIf="events.length === 0">
+      <p style="color: red;">No events found in the events array!</p>
+    </div>
+  </div>
+
+  <div class="events-intro">
+    <p *ngIf="events.length > 0">
+      Hitta och anmäl dig till kommande cykelevenemang. Klicka på "HÄMTA LOGIN" för att registrera dig och komma med på startlistan.
+    </p>
+    <p *ngIf="events.length === 0">
+      Det finns inga evenemang än. Klicka på "Create Event" i menyn för att skapa ett nytt evenemang.
+    </p>
+  </div>
+
+  <!-- Group events by month -->
+  <div class="events-by-month" *ngFor="let monthGroup of eventsByMonth">
+    <h2 class="month-header">{{ monthGroup.month }}</h2>
+
+    <div class="event-list">
+      <!-- Event cards in ebrevet.org style -->
+      <div class="event-card" *ngFor="let event of monthGroup.events">
+        <div class="event-distance-badge">{{ event.distance }} KM</div>
+        <h3 class="event-title">{{ event.name }}</h3>
+
+        <div class="event-meta">
+          <div class="meta-item">
+            <span class="meta-icon">📅</span>
+            <span>{{ formatDate(event.date) }}</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-icon">🕒</span>
+            <span>{{ event.time }}</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-icon">📍</span>
+            <span>{{ event.location }}</span>
+          </div>
+        </div>
+
+        <div class="event-details">
+          <div class="detail-row" *ngIf="event.elevation">
+            <div class="detail-label">Höjdmeter:</div>
+            <div class="detail-value">{{ event.elevation }} M</div>
+          </div>
+
+          <div class="detail-row" *ngIf="event.deadline">
+            <div class="detail-label">Sista anmälan:</div>
+            <div class="detail-value">{{ formatDate(event.deadline) }}</div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-label">Arrangör:</div>
+            <div class="detail-value">{{ event.organizer }}</div>
+          </div>
+
+          <div class="detail-row" *ngIf="event.paymentMethod">
+            <div class="detail-label">Betala via:</div>
+            <div class="detail-value">{{ event.paymentMethod }}</div>
+          </div>
+          
+          <div class="detail-row" *ngIf="event.description">
+            <div class="detail-label">Övrigt:</div>
+            <div class="detail-value">{{ event.description }}</div>
+          </div>
+        </div>
+
+        <div class="event-actions">
+          <a *ngIf="event.routeLink" [href]="event.routeLink" target="_blank" class="action-link">
+            <span class="action-icon">🗺️</span> Länk till bana
+          </a>
+          <a [routerLink]="['/events/startlist', event.id]" class="action-link">
+            <span class="action-icon">👥</span> Startlista
+          </a>
+          <a [routerLink]="['/events/register', event.id]" class="action-link">
+            <span class="action-icon">📝</span> Registrera
+          </a>
+          <a [routerLink]="['/events/login', event.id]" class="action-link login-link">HÄMTA LOGIN</a>
+          <button class="delete-button" (click)="deleteEvent(event.id, $event)">✕</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

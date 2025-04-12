@@ -1,0 +1,36 @@
+{
+  "name": "map-main",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node scripts/network-info.js",
+    "start-mcp": "node scripts/cursor-mcp-server.js",
+    "test-mcp": "node scripts/test-mcp-connection.js",
+    "setup-supabase": "node scripts/setup-database.js",
+    "create-admin": "node scripts/create-admin.js",
+    "manage-accounts": "node scripts/list-accounts.js",
+    "setup-database": "node ./scripts/setup-database.js",
+    "disable-email-confirmation": "node scripts/disable-email-confirmation.js",
+    "initialize-db": "node ./angularSetup/scripts/initialize-database.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@angular/animations": "^16.2.12",
+    "@angular/router": "^16.2.12",
+    "@supabase/supabase-js": "^2.39.0",
+    "dotenv": "^16.3.1",
+    "http": "^0.0.1-security",
+    "primeicons": "^6.0.1",
+    "primeng": "^16.9.1",
+    "socket.io-client": "^4.8.1",
+    "ws": "^8.15.1"
+  },
+  "devDependencies": {
+    "@types/socket.io-client": "^3.0.0",
+    "@types/ws": "^8.5.10"
+  }
+}

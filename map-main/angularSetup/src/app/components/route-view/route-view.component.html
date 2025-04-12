@@ -1,0 +1,37 @@
+<div class="route-view-container">
+  <div class="route-header">
+    <div class="route-info" *ngIf="route">
+      <h1>{{ route.name }}</h1>
+      <div class="route-stats">
+        <div class="stat">
+          <span class="label">Distance:</span>
+          <span class="value">{{ route.coordinates ? (calculateRouteDistance(route.coordinates) / 1000).toFixed(2) : '0' }} km</span>
+        </div>
+        <div class="stat">
+          <span class="label">Points:</span>
+          <span class="value">{{ route.coordinates ? route.coordinates.length : 0 }}</span>
+        </div>
+        <div class="stat">
+          <span class="label">Checkpoints:</span>
+          <span class="value">{{ route.checkpoints ? route.checkpoints.length : 0 }}</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="route-actions">
+      <button class="close-btn" onclick="window.close()">Close</button>
+    </div>
+  </div>
+  
+  <div class="route-loading" *ngIf="isLoading">
+    <div class="spinner"></div>
+    <p>Loading route...</p>
+  </div>
+  
+  <div class="route-error" *ngIf="errorMessage">
+    <p>{{ errorMessage }}</p>
+    <button class="close-btn" onclick="window.close()">Close</button>
+  </div>
+  
+  <div id="route-map" class="route-map"></div>
+</div> 

@@ -1,0 +1,170 @@
+<div class="container">
+  <h2>GPX Brevet Calculator</h2>
+  
+  <div class="calculator-section">
+    <div class="input-section">
+      <div class="brevet-distances">
+        <h3>Standard Brevet Distances</h3>
+        <div class="brevet-buttons">
+          <button 
+            *ngFor="let distance of brevetDistances" 
+            [class.active]="selectedDistance === distance"
+            (click)="onSelectPredefinedDistance(distance)">
+            {{ distance }} km
+          </button>
+        </div>
+      </div>
+  
+      <div class="manual-calculation">
+        <h3>Manual Distance Entry</h3>
+        <div class="form-group">
+          <label for="distance">Distance (km):</label>
+          <input 
+            type="number" 
+            id="distance" 
+            [(ngModel)]="totalDistance" 
+            min="1" 
+            step="1"
+            placeholder="Enter distance in kilometers">
+        </div>
+        
+        <div class="form-group">
+          <label for="controlInterval">Control Interval (km):</label>
+          <input 
+            type="number" 
+            id="controlInterval" 
+            [(ngModel)]="controlInterval" 
+            min="10" 
+            max="100" 
+            step="10"
+            placeholder="Distance between controls">
+        </div>
+        
+        <div class="form-group">
+          <label for="controlRadius">Control Radius (m):</label>
+          <input 
+            type="number" 
+            id="controlRadius" 
+            [(ngModel)]="controlRadius" 
+            min="50" 
+            max="1000" 
+            step="50"
+            (change)="updateControlRadius()"
+            placeholder="Control validation radius">
+          <div class="help-text">Riders must pass within this radius to validate a control</div>
+        </div>
+        
+        <div class="form-group">
+          <label for="startTime">Start Time:</label>
+          <input 
+            type="datetime-local" 
+            id="startTime" 
+            [(ngModel)]="startTime">
+        </div>
+        
+        <button (click)="calculateWithoutGpx()" [disabled]="isLoading">Calculate Controls</button>
+      </div>
+      
+      <div class="gpx-upload">
+        <h3>Upload GPX File</h3>
+        <div class="form-group">
+          <label for="gpxFile">GPX File:</label>
+          <input 
+            type="file" 
+            id="gpxFile" 
+            accept=".gpx" 
+            (change)="onFileSelected($event)">
+        </div>
+        
+        <div *ngIf="fileName" class="selected-file">
+          Selected file: {{ fileName }}
+        </div>
+        
+        <div class="form-group">
+          <label for="startTimeGpx">Start Time:</label>
+          <input 
+            type="datetime-local" 
+            id="startTimeGpx" 
+            [(ngModel)]="startTime">
+        </div>
+        
+        <div *ngIf="hasGpxCheckpoints()" class="form-group checkbox-group">
+          <input 
+            type="checkbox" 
+            id="useGpxCheckpoints" 
+            [checked]="useGpxCheckpoints"
+            (change)="toggleUseGpxCheckpoints()">
+          <label for="useGpxCheckpoints">
+            Use checkpoints from GPX file ({{ gpxCheckpoints.length }} found)
+          </label>
+        </div>
+        
+        <button (click)="processGpxFile()" [disabled]="!gpxFile || isLoading">Process GPX</button>
+      </div>
+    </div>
+    
+    <div *ngIf="isLoading" class="loading">
+      <p>Processing...</p>
+    </div>
+    
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+    
+    <div *ngIf="processCompleted" class="results-section">
+      <h3>Brevet Details</h3>
+      <div class="route-details">
+        <p><strong>Route Name:</strong> {{ routeName || 'Unnamed Route' }}</p>
+        <p><strong>Total Distance:</strong> {{ totalDistance.toFixed(1) }} km</p>
+        <p><strong>Control Points:</strong> {{ controlPoints.length }}</p>
+        <p><strong>Control Radius:</strong> {{ controlRadius }} meters</p>
+        <p>
+          <strong>Total Time Window:</strong> {{ getTotalTimeWindow() }}<br>
+          <span class="time-window-detail">{{ getTimeWindowDetails() }}</span>
+        </p>
+      </div>
+      
+      <!-- Map View -->
+      <div class="map-section">
+        <h3>Route Map</h3>
+        <div id="control-map" class="route-map"></div>
+      </div>
+      
+      <div class="control-times-header">
+        <h3>Control Times</h3>
+        <div class="time-format-controls">
+          <app-time-format-converter 
+            [use24HourFormat]="use24HourFormat"
+            (formatChanged)="toggleTimeFormat()">
+          </app-time-format-converter>
+          <span class="format-label">{{ use24HourFormat ? '24-hour format' : '12-hour format (AM/PM)' }}</span>
+        </div>
+      </div>
+      
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Control (km)</th>
+              <th>Opening Time</th>
+              <th>Closing Time</th>
+              <th *ngIf="checkpointNames.length > 0">Name</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of getControlTimeRows()">
+              <td>{{ row.distance }}</td>
+              <td>{{ row.openingTime }}</td>
+              <td>{{ row.closingTime }}</td>
+              <td *ngIf="checkpointNames.length > 0">{{ row.name }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <button (click)="downloadControlTimes()" class="download-button">
+        Download Control Times
+      </button>
+    </div>
+  </div>
+</div> 

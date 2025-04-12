@@ -1,0 +1,643 @@
+<div class="event-creator-container">
+  <h2>Create New Event</h2>
+  
+  <!-- Custom Stepper -->
+  <div class="custom-stepper">
+    <div class="stepper-steps">
+      <div 
+        *ngFor="let step of steps; let i = index" 
+        class="stepper-step" 
+        [class.active]="activeStep === i"
+        [class.completed]="step.completed"
+        (click)="goToStep(i)">
+        <div class="step-number">{{ i + 1 }}</div>
+        <div class="step-label">{{ step.label }}</div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Error message display -->
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+  
+  <div class="two-column-layout">
+    <!-- Left column: Form -->
+    <div class="form-column">
+      <div class="form-card">
+        <div class="form-container">
+          <!-- Step 1: Basic Information -->
+          <div class="step-content" *ngIf="activeStep === 0">
+            <h3>Grundläggande information</h3>
+            
+            <div class="form-group">
+              <label for="eventName">Evenemangets namn *</label>
+              <input 
+                type="text" 
+                id="eventName" 
+                [(ngModel)]="eventName" 
+                placeholder="Ange evenemangets namn" 
+                required>
+            </div>
+            
+            <div class="form-group">
+              <label for="eventDate">Datum *</label>
+              <input 
+                type="date" 
+                id="eventDate" 
+                [(ngModel)]="eventDate" 
+                required>
+            </div>
+            
+            <div class="form-group">
+              <label for="eventTime">Starttid</label>
+              <div class="custom-time-input">
+                <div class="time-field-wrapper">
+                  <input 
+                    type="number" 
+                    id="eventTimeHours" 
+                    [ngModel]="getHours(eventTime)"
+                    (ngModelChange)="updateTime($event, getMinutes(eventTime))"
+                    min="0" 
+                    max="23" 
+                    step="1"
+                    placeholder="HH">
+                  <div class="time-separator">:</div>
+                  <input 
+                    type="number" 
+                    id="eventTimeMinutes" 
+                    [ngModel]="getMinutes(eventTime)"
+                    (ngModelChange)="updateTime(getHours(eventTime), $event)"
+                    min="0" 
+                    max="59" 
+                    step="1"
+                    placeholder="MM">
+                </div>
+                <div class="time-format">24h</div>
+              </div>
+              <small class="form-hint">24-timmar format (t.ex. 23:59)</small>
+            </div>
+            
+            <div class="form-group">
+              <label for="eventDeadline">Registration Deadline</label>
+              <input 
+                type="date" 
+                id="eventDeadline" 
+                [(ngModel)]="eventDeadline" 
+                placeholder="Registration deadline">
+            </div>
+            
+            <div class="form-group">
+              <label for="eventLocation">Start Location *</label>
+              <input 
+                type="text" 
+                id="eventLocation" 
+                [(ngModel)]="eventLocation" 
+                placeholder="Start/finish location"
+                required>
+            </div>
+            
+            <div class="form-group">
+              <label for="eventOrganizer">Organizer *</label>
+              <input 
+                type="text" 
+                id="eventOrganizer" 
+                [(ngModel)]="eventOrganizer" 
+                placeholder="Organizing club/entity"
+                required>
+            </div>
+          </div>
+          
+          <!-- Step 2: Event Details -->
+          <div class="step-content" *ngIf="activeStep === 1">
+            <h3>Event Details</h3>
+            
+            <div class="form-row">
+              <div class="form-group half-width">
+                <label for="eventType">Event Type</label>
+                <select id="eventType" [(ngModel)]="eventType">
+                  <option *ngFor="let type of eventTypes" [value]="type.value">
+                    {{ type.label }}
+                  </option>
+                </select>
+              </div>
+              
+              <div class="form-group half-width" *ngIf="eventType === 'brevet'">
+                <label for="eventDistance">Distance (km)</label>
+                <div class="button-group">
+                  <button 
+                    *ngFor="let distance of brevetDistances" 
+                    [class.active]="eventDistance === distance"
+                    (click)="eventDistance = distance"
+                    type="button">
+                    {{ distance }}
+                  </button>
+                </div>
+              </div>
+              
+              <div class="form-group half-width" *ngIf="eventType !== 'brevet'">
+                <label for="customDistance">Distance (km)</label>
+                <input 
+                  type="number" 
+                  id="customDistance" 
+                  [(ngModel)]="eventDistance" 
+                  min="1" 
+                  step="1">
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="eventElevation">Elevation Gain (m)</label>
+              <input 
+                type="number" 
+                id="eventElevation" 
+                [(ngModel)]="eventElevation" 
+                min="0" 
+                step="1"
+                placeholder="Total elevation gain in meters">
+            </div>
+            
+            <!-- GPX File Upload -->
+            <div class="form-group">
+              <label for="gpxFile">GPX Route File</label>
+              <div class="file-upload-wrapper">
+                <input 
+                  type="file" 
+                  id="gpxFile" 
+                  accept=".gpx" 
+                  class="file-input" 
+                  (change)="onGpxFileSelected($event)">
+                <label for="gpxFile" class="file-upload-label">
+                  <span>{{ gpxFileName || 'Select GPX file' }}</span>
+                </label>
+              </div>
+              <div *ngIf="processingGpx" class="processing-message">
+                <span class="spinner"></span> Processing GPX file...
+              </div>
+              <div *ngIf="gpxProcessingError" class="error-message file-error">
+                {{ gpxProcessingError }}
+              </div>
+              <div *ngIf="gpxFileName && !gpxProcessingError" class="info-message">
+                <small>Distance and elevation will be calculated from the GPX file.</small>
+              </div>
+            </div>
+            
+            <!-- Image Upload -->
+            <div class="form-group">
+              <label for="eventImage">Event Image</label>
+              <div class="file-upload-wrapper">
+                <input 
+                  type="file" 
+                  id="eventImage" 
+                  accept="image/*" 
+                  class="file-input" 
+                  (change)="onImageFileSelected($event)">
+                <label for="eventImage" class="file-upload-label">
+                  <span>{{ imageFileName || 'Select image' }}</span>
+                </label>
+              </div>
+              <div *ngIf="imagePreviewUrl" class="image-preview-wrapper">
+                <img [src]="imagePreviewUrl" alt="Event image preview" class="image-preview">
+                <button type="button" class="remove-image-button" (click)="removeImage()">Remove</button>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="eventPaymentMethod">Payment Method</label>
+              <input 
+                type="text" 
+                id="eventPaymentMethod" 
+                [(ngModel)]="eventPaymentMethod" 
+                placeholder="e.g., Swish 1234567890">
+            </div>
+            
+            <div class="form-group">
+              <label for="eventRouteLink">Route Link</label>
+              <input 
+                type="url" 
+                id="eventRouteLink" 
+                [(ngModel)]="eventRouteLink" 
+                placeholder="Link to route (e.g., Strava, RideWithGPS)">
+            </div>
+          </div>
+          
+          <!-- Step 3: Description and Checkpoints -->
+          <div class="step-content" *ngIf="activeStep === 2">
+            <h3>Kontrollpunkter & Beskrivning</h3>
+            
+            <div class="checkpoint-section">
+              <div class="section-header">
+                <h4>Kontrollpunkter</h4>
+                <button 
+                  type="button" 
+                  class="secondary-button small-button" 
+                  (click)="calculateCheckpointTimes()"
+                  [disabled]="checkpointTimesCalculated">
+                  Beräkna kontrolltider
+                </button>
+              </div>
+              
+              <!-- Checkpoint list -->
+              <div class="checkpoint-list" *ngIf="checkpoints.length > 0">
+                <div class="checkpoint-item" *ngFor="let checkpoint of checkpoints; let i = index">
+                  <div class="checkpoint-card">
+                    <div class="checkpoint-header">
+                      <div class="checkpoint-distance">{{ checkpoint.distance.toFixed(1) }} km</div>
+                      <div class="checkpoint-actions" *ngIf="i !== 0 && i !== checkpoints.length - 1">
+                        <button type="button" class="delete-button" (click)="removeCheckpoint(i)">✕</button>
+                      </div>
+                    </div>
+                    
+                    <div class="checkpoint-content">
+                      <div class="form-group">
+                        <label [for]="'checkpoint-name-' + i">Namn</label>
+                        <input 
+                          [id]="'checkpoint-name-' + i" 
+                          type="text" 
+                          [(ngModel)]="checkpoint.name" 
+                          placeholder="Kontrollpunktsnamn">
+                      </div>
+                      
+                      <div class="form-group">
+                        <label [for]="'checkpoint-location-' + i">Plats</label>
+                        <input 
+                          [id]="'checkpoint-location-' + i" 
+                          type="text" 
+                          [(ngModel)]="checkpoint.location" 
+                          placeholder="Kontrollpunktens plats">
+                      </div>
+                      
+                      <div class="checkpoint-times" *ngIf="checkpointTimesCalculated">
+                        <div class="time-group">
+                          <div class="time-label">Öppningstid:</div>
+                          <div class="time-value">
+                            {{ formatDateString(checkpoint.openingTime) }} {{ formatTimeString(checkpoint.openingTime) }}
+                          </div>
+                        </div>
+                        
+                        <div class="time-group">
+                          <div class="time-label">Stängningstid:</div>
+                          <div class="time-value">
+                            {{ formatDateString(checkpoint.closingTime) }} {{ formatTimeString(checkpoint.closingTime) }}
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <!-- Checkpoint image upload -->
+                      <div class="checkpoint-image-upload">
+                        <div class="form-group">
+                          <label [for]="'checkpoint-image-' + i">Bild</label>
+                          <div class="file-upload-wrapper">
+                            <input 
+                              type="file" 
+                              [id]="'checkpoint-image-' + i" 
+                              accept="image/*" 
+                              class="file-input" 
+                              (change)="onCheckpointImageSelected($event, false, i)">
+                            <label [for]="'checkpoint-image-' + i" class="file-upload-label">
+                              <span>{{ checkpoint.imageFileName || 'Välj bild' }}</span>
+                            </label>
+                          </div>
+                          
+                          <div *ngIf="checkpoint.imagePreviewUrl" class="image-preview-wrapper">
+                            <img [src]="checkpoint.imagePreviewUrl" alt="Kontrollpunktsbild" class="image-preview">
+                            <button 
+                              type="button" 
+                              class="remove-image-button" 
+                              (click)="removeCheckpointImage(false, i)">
+                              Ta bort
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Add new checkpoint -->
+              <div class="add-checkpoint-section">
+                <h4>Lägg till kontrollpunkt</h4>
+                <div class="checkpoint-card">
+                  <div class="form-row">
+                    <div class="form-group half-width">
+                      <label for="new-checkpoint-name">Namn</label>
+                      <input 
+                        id="new-checkpoint-name" 
+                        type="text" 
+                        [(ngModel)]="newCheckpoint.name" 
+                        placeholder="Kontrollpunktsnamn">
+                    </div>
+                    
+                    <div class="form-group half-width">
+                      <label for="new-checkpoint-distance">Avstånd (km)</label>
+                      <input 
+                        id="new-checkpoint-distance" 
+                        type="number" 
+                        [(ngModel)]="newCheckpoint.distance" 
+                        min="0" 
+                        [max]="eventDistance" 
+                        step="0.1" 
+                        placeholder="Avstånd i km">
+                    </div>
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="new-checkpoint-location">Plats</label>
+                    <input 
+                      id="new-checkpoint-location" 
+                      type="text" 
+                      [(ngModel)]="newCheckpoint.location" 
+                      placeholder="Kontrollpunktens plats">
+                  </div>
+                  
+                  <!-- New checkpoint image upload -->
+                  <div class="form-group">
+                    <label for="new-checkpoint-image">Bild</label>
+                    <div class="file-upload-wrapper">
+                      <input 
+                        type="file" 
+                        id="new-checkpoint-image" 
+                        accept="image/*" 
+                        class="file-input" 
+                        (change)="onCheckpointImageSelected($event, true)">
+                      <label for="new-checkpoint-image" class="file-upload-label">
+                        <span>{{ newCheckpoint.imageFileName || 'Välj bild' }}</span>
+                      </label>
+                    </div>
+                    
+                    <div *ngIf="newCheckpoint.imagePreviewUrl" class="image-preview-wrapper">
+                      <img [src]="newCheckpoint.imagePreviewUrl" alt="Kontrollpunktsbild" class="image-preview">
+                      <button 
+                        type="button" 
+                        class="remove-image-button" 
+                        (click)="removeCheckpointImage(true)">
+                        Ta bort
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div class="form-actions">
+                    <button 
+                      type="button" 
+                      class="primary-button small-button" 
+                      (click)="addCheckpoint()">
+                      Lägg till kontrollpunkt
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Event Description -->
+            <div class="description-section">
+              <h4>Beskrivning</h4>
+              <div class="form-group">
+                <label for="eventDescription">Beskrivning (valfritt)</label>
+                <textarea 
+                  id="eventDescription" 
+                  [(ngModel)]="eventDescription" 
+                  placeholder="Beskriv evenemanget, rutten, terrängtyp, sevärdigheter längs vägen, etc." 
+                  rows="6"></textarea>
+              </div>
+            </div>
+            
+            <div class="button-group">
+              <button class="btn btn-back" (click)="goToPreviousStep()">Föregående</button>
+              <button class="btn btn-next" (click)="goToNextStep()">Nästa</button>
+            </div>
+          </div>
+          
+          <!-- Step 4: Confirmation -->
+          <div class="step-content" *ngIf="activeStep === 3">
+            <h3>Bekräfta uppgifter</h3>
+            
+            <div class="confirmation-details">
+              <div class="confirmation-row">
+                <span class="label">Event Name:</span>
+                <span class="value">{{ eventName }}</span>
+              </div>
+              
+              <div class="confirmation-row">
+                <span class="label">Event Date:</span>
+                <span class="value">{{ formatDateSwedish(eventDate) }}</span>
+              </div>
+              
+              <div class="confirmation-row" *ngIf="eventTime">
+                <span class="label">Start Time:</span>
+                <span class="value">{{ getFormattedTime(eventTime) }}</span>
+              </div>
+              
+              <div class="confirmation-row" *ngIf="eventDeadline">
+                <span class="label">Registration Deadline:</span>
+                <span class="value">{{ formatDateSwedish(eventDeadline) }}</span>
+              </div>
+              
+              <div class="confirmation-row" *ngIf="eventLocation">
+                <span class="label">Start Location:</span>
+                <span class="value">{{ eventLocation }}</span>
+              </div>
+              
+              <div class="confirmation-row" *ngIf="eventOrganizer">
+                <span class="label">Organizer:</span>
+                <span class="value">{{ eventOrganizer }}</span>
+              </div>
+              
+              <div class="confirmation-row">
+                <span class="label">Event Type:</span>
+                <span class="value">{{ getEventTypeLabel(eventType) }}</span>
+              </div>
+              
+              <div class="confirmation-row">
+                <span class="label">Distance:</span>
+                <span class="value">{{ eventDistance }} km</span>
+              </div>
+              
+              <div class="confirmation-row" *ngIf="eventElevation">
+                <span class="label">Elevation Gain:</span>
+                <span class="value">{{ eventElevation }} m</span>
+              </div>
+              
+              <div class="confirmation-row" *ngIf="gpxFileName">
+                <span class="label">GPX File:</span>
+                <span class="value">{{ gpxFileName }}</span>
+              </div>
+              
+              <div class="confirmation-row" *ngIf="imageFileName">
+                <span class="label">Event Image:</span>
+                <span class="value">{{ imageFileName }}</span>
+              </div>
+              
+              <div class="confirmation-row" *ngIf="eventPaymentMethod">
+                <span class="label">Payment Method:</span>
+                <span class="value">{{ eventPaymentMethod }}</span>
+              </div>
+              
+              <div class="confirmation-row" *ngIf="eventRouteLink">
+                <span class="label">Route Link:</span>
+                <span class="value">
+                  <a [href]="eventRouteLink" target="_blank">{{ eventRouteLink }}</a>
+                </span>
+              </div>
+              
+              <div class="confirmation-row" *ngIf="checkpoints.length > 0">
+                <span class="label">Kontrollpunkter:</span>
+                <div class="checkpoint-summary">
+                  <div *ngFor="let checkpoint of checkpoints" class="checkpoint-summary-item">
+                    {{ checkpoint.name }} ({{ checkpoint.distance.toFixed(1) }} km)
+                    <div *ngIf="checkpoint.openingTime && checkpoint.closingTime" class="checkpoint-times-summary">
+                      Öppen: {{ formatDateString(checkpoint.openingTime) }} {{ formatTimeString(checkpoint.openingTime) }} - 
+                      {{ formatDateString(checkpoint.closingTime) }} {{ formatTimeString(checkpoint.closingTime) }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="confirmation-row" *ngIf="eventDescription">
+                <span class="label">Description:</span>
+                <div class="description-value">{{ eventDescription }}</div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Navigation Buttons -->
+          <div class="step-buttons">
+            <button 
+              type="button" 
+              class="secondary-button" 
+              (click)="goToPreviousStep()" 
+              [disabled]="activeStep === 0">
+              Föregående
+            </button>
+            
+            <div>
+              <button 
+                type="button" 
+                class="secondary-button" 
+                (click)="resetForm()">
+                Återställ
+              </button>
+              
+              <button 
+                *ngIf="activeStep < 3" 
+                type="button" 
+                class="primary-button" 
+                (click)="goToNextStep()">
+                Nästa
+              </button>
+              
+              <button 
+                *ngIf="activeStep === 3" 
+                type="button" 
+                class="primary-button" 
+                (click)="createEvent()">
+                Skapa evenemang
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Right column: Preview -->
+    <div class="preview-column">
+      <div class="preview-header">
+        <h3>Event Preview</h3>
+        <p class="preview-hint">This is how your event will appear to participants</p>
+      </div>
+      
+      <div class="event-card">
+        <!-- Event Image -->
+        <div *ngIf="imagePreviewUrl" class="event-card-image">
+          <img [src]="imagePreviewUrl" alt="Event image">
+        </div>
+        
+        <h3 class="event-card-title">{{ eventName || 'Event Name' }}</h3>
+        
+        <div class="event-card-detail">
+          <span class="detail-label">Distans:</span>
+          <span class="detail-value">{{ eventDistance || '0' }} KM</span>
+        </div>
+        
+        <div class="event-card-detail" *ngIf="eventElevation">
+          <span class="detail-label">Höjdmeter:</span>
+          <span class="detail-value">{{ eventElevation }} M</span>
+        </div>
+        
+        <div class="event-card-detail">
+          <span class="detail-label">Startdatum:</span>
+          <span class="detail-value">{{ eventDate ? formatDateSwedish(eventDate) : 'Date' }}</span>
+        </div>
+        
+        <div class="event-card-detail" *ngIf="eventTime">
+          <span class="detail-label">Starttid:</span>
+          <span class="detail-value">{{ getFormattedTime(eventTime) }}</span>
+        </div>
+        
+        <div class="event-card-detail" *ngIf="eventDeadline">
+          <span class="detail-label">Sista anmälan:</span>
+          <span class="detail-value">{{ formatDateSwedish(eventDeadline) }}</span>
+        </div>
+        
+        <div class="event-card-detail" *ngIf="eventLocation">
+          <span class="detail-label">Startort:</span>
+          <span class="detail-value">{{ eventLocation }}</span>
+        </div>
+        
+        <div class="event-card-detail" *ngIf="eventOrganizer">
+          <span class="detail-label">Arrangör:</span>
+          <span class="detail-value">{{ eventOrganizer }}</span>
+        </div>
+        
+        <div class="event-card-detail" *ngIf="eventPaymentMethod">
+          <span class="detail-label">Betala via:</span>
+          <span class="detail-value">{{ eventPaymentMethod }}</span>
+        </div>
+        
+        <div class="event-card-detail" *ngIf="eventDescription">
+          <span class="detail-label">Övrigt:</span>
+          <span class="detail-value description-preview">{{ eventDescription }}</span>
+        </div>
+        
+        <div class="event-card-links">
+          <a *ngIf="eventRouteLink" [href]="eventRouteLink" target="_blank" class="event-link">Länk till bana</a>
+          <a href="#" class="event-link">Startlista</a>
+          <a href="#" class="event-link active-link">HÄMTA LOGIN</a>
+        </div>
+      </div>
+      
+      <!-- Checkpoint cards - displayed outside the main event card -->
+      <div class="checkpoint-cards-container" *ngIf="checkpoints.length > 0">
+        <h3 class="checkpoint-section-title">Kontrollpunkter</h3>
+        
+        <div class="checkpoint-card-wrapper" *ngFor="let checkpoint of checkpoints">
+          <div class="checkpoint-preview-card">
+            <div class="checkpoint-card-header">
+              <h4 class="checkpoint-card-title">{{ checkpoint.name }}</h4>
+              <div class="checkpoint-card-distance">{{ checkpoint.distance.toFixed(1) }} km</div>
+            </div>
+            
+            <div *ngIf="checkpoint.imagePreviewUrl" class="checkpoint-card-image">
+              <img [src]="checkpoint.imagePreviewUrl" alt="Checkpoint image">
+            </div>
+            
+            <div class="checkpoint-card-details">
+              <div *ngIf="checkpoint.location" class="checkpoint-detail">
+                <div class="detail-icon">📍</div>
+                <div class="detail-content">{{ checkpoint.location }}</div>
+              </div>
+              
+              <div *ngIf="checkpoint.openingTime && checkpoint.closingTime" class="checkpoint-detail">
+                <div class="detail-icon">🕒</div>
+                <div class="detail-content">
+                  <div class="time-detail">Öppnar: {{ formatDateString(checkpoint.openingTime) }} {{ formatTimeString(checkpoint.openingTime) }}</div>
+                  <div class="time-detail">Stänger: {{ formatDateString(checkpoint.closingTime) }} {{ formatTimeString(checkpoint.closingTime) }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

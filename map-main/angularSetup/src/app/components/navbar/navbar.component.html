@@ -1,0 +1,21 @@
+<div class="headerless-navbar" [class.visible]="isVisible">
+  <div class="nav-container">
+    <div class="nav-logo">
+      <span>{{ title }}</span>
+    </div>
+    <div class="nav-links">
+      <a routerLink="/" routerLinkActive="nav-active" [routerLinkActiveOptions]="{exact: true}">Hem</a>
+      <a routerLink="/map" routerLinkActive="nav-active">Karta</a>
+      <a routerLink="/explore" routerLinkActive="nav-active">Utforska</a>
+      <a routerLink="/gpx-calculator" routerLinkActive="nav-active">GPX Kalkylator</a>
+      <a routerLink="/create-event" routerLinkActive="nav-active">Skapa Event</a>
+      <a routerLink="/events" routerLinkActive="nav-active">Evenemang</a>
+      <a class="nav-link" routerLink="/events" routerLinkActive="active">
+        <i class="fas fa-calendar-alt"></i> Kalender
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Hover zone at the top of the page to trigger navbar visibility -->
+<div class="navbar-trigger" (mouseenter)="showNavbar()" (mouseleave)="hideNavbarWithDelay()"></div>

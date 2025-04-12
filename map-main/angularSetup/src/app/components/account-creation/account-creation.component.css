@@ -1,0 +1,25 @@
+/* Custom styles beyond Tailwind classes */
+.ng-invalid.ng-touched {
+  @apply border-red-300;
+}
+
+/* Custom transitions */
+.form-transition {
+  @apply transition-all duration-300;
+}
+
+/* Specific animation for messages */
+.message-animate-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+} 

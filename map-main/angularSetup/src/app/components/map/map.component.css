@@ -1,0 +1,1772 @@
+#map {
+  width: 100%;
+  height: 100vh;
+  z-index: 1;
+  flex: 1;
+}
+
+.map-element {
+  width: 100%;
+  height: 100vh;
+  flex: 1;
+}
+
+.map-container {
+  width: 100%;
+  height: 100vh;
+  position: relative;
+  display: flex;
+}
+
+.map-sidebar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
+}
+
+.route-selector {
+  margin: 20px;
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  min-width: 250px;
+  max-width: 300px;
+  pointer-events: auto;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.leaflet-popup-content {
+  font-size: 14px;
+  line-height: 1.4;
+  margin: 0; /* Remove default margins */
+}
+
+.leaflet-popup-content-wrapper {
+  padding: 0; /* Remove default padding */
+  overflow: hidden; /* For rounded corners */
+}
+
+.leaflet-tooltip {
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  font-size: 12px;
+  padding: 4px 8px;
+  white-space: nowrap;
+}
+
+.leaflet-tooltip-top:before {
+  border-top-color: rgba(0, 0, 0, 0.7);
+}
+
+.leaflet-popup-content strong {
+  color: #4B69FF;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.route-popup {
+  padding: 12px;
+  min-width: 240px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.route-popup strong {
+  font-size: 16px;
+  display: block;
+  margin-bottom: 10px;
+  color: #374151;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 6px;
+}
+
+.route-popup-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+  margin-bottom: 12px;
+  font-size: 12px;
+}
+
+.route-popup-info-grid .label {
+  font-weight: 600;
+  color: #4B5563;
+}
+
+.route-popup-info-grid .value {
+  color: #1F2937;
+  text-align: right;
+}
+
+.route-popup div {
+  font-size: 12px;
+  line-height: 1.4;
+  margin-bottom: 4px;
+  color: #4B5563;
+}
+
+.route-popup-actions {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.route-popup-actions button {
+  transition: all 0.2s ease;
+  cursor: pointer;
+  padding: 4px 8px;
+  min-width: 120px;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 14px;
+  margin-top: 5px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.select-route-btn:hover {
+  background-color: #3b82f6 !important;
+  transform: translateY(-1px);
+}
+
+.selected-route-btn:hover {
+  background-color: #c0c4c9 !important;
+}
+
+.toggle-checkpoints-btn {
+  min-width: 120px;
+  background-color: #FCD34D;
+  color: #1E293B;
+  margin-top: 8px;
+}
+
+.toggle-checkpoints-btn:hover {
+  background-color: #F59E0B !important;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.rider-panel {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  min-width: 250px;
+  max-width: 320px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+/* Fix rider marker styling */
+.rider-marker {
+  z-index: 1000 !important;
+  background: transparent !important;
+  border: none !important;
+}
+
+.rider-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid white;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.rider-initials {
+  color: white;
+  text-shadow: 0px 0px 2px rgba(0,0,0,0.8);
+  line-height: 1;
+}
+
+/* Enhanced rider marker styling */
+.rider-marker-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.rider-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+  border: 2px solid white;
+  transition: transform 0.1s ease-in-out;
+  font-size: 12px;
+  font-weight: bold;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  transition: all 0.3s ease-in-out;
+  will-change: transform, box-shadow;
+}
+
+.rider-icon:hover {
+  transform: scale(1.2);
+}
+
+.rider-label {
+  line-height: 1;
+  font-family: Arial, sans-serif;
+}
+
+/* Ensure the popup styling is working properly */
+.rider-popup {
+  min-width: 200px;
+  padding: 0;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.rider-popup-header {
+  padding: 8px;
+  color: white;
+  font-weight: bold;
+}
+
+.rider-stats {
+  padding: 10px;
+  background: white;
+}
+
+.rider-stat-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.rider-stat-label {
+  color: #666;
+  font-size: 12px;
+}
+
+.rider-stat-value {
+  font-weight: 600;
+  font-size: 12px;
+}
+
+/* Improved rider popup styling */
+.rider-popup-header {
+  padding: 8px 12px;
+  color: white;
+  font-weight: bold;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  text-align: center;
+}
+
+.rider-stats {
+  padding: 10px;
+  background: white;
+}
+
+.rider-stat-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+.rider-stat-label {
+  color: #666;
+}
+
+.rider-stat-value {
+  font-weight: 600;
+  color: #333;
+}
+
+.rider-speed {
+  color: #2563EB;
+}
+
+.elevation-low {
+  color: #10B981 !important;
+}
+
+.elevation-medium {
+  color: #F59E0B !important;
+}
+
+.elevation-high {
+  color: #EF4444 !important;
+}
+
+.rider-current-stage {
+  margin-top: 8px;
+  padding: 6px;
+  border-radius: 4px;
+  background-color: rgba(0, 0, 0, 0.03);
+  border-left: 3px solid;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+}
+
+.stage-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+
+/* Make tooltip more visible */
+.rider-tooltip {
+  background-color: rgba(0,0,0,0.75);
+  color: white;
+  border: 1px solid white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+}
+
+/* Custom tooltip styling */
+.rider-tooltip {
+  background-color: rgba(0, 0, 0, 0.8) !important;
+  color: white !important;
+  border: 1px solid white !important;
+  font-weight: bold !important;
+  padding: 4px 8px !important;
+  border-radius: 4px !important;
+  font-size: 12px !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Make rider marker appear above route lines */
+.rider-custom-icon {
+  z-index: 1000 !important;
+}
+
+/* Fix rider movement animation */
+@keyframes rider-pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+
+@keyframes rider-glow {
+  0% { box-shadow: 0 0 5px 2px rgba(255, 255, 255, 0.3); }
+  50% { box-shadow: 0 0 15px 5px rgba(255, 255, 255, 0.8); }
+  100% { box-shadow: 0 0 5px 2px rgba(255, 255, 255, 0.3); }
+}
+
+/* Stronger, more visible animation for moving riders */
+.rider-moving .rider-icon {
+  animation-name: rider-pulse, rider-glow !important;
+  animation-duration: 0.3s !important;
+  animation-timing-function: ease-in-out !important;
+  animation-iteration-count: 1 !important;
+  z-index: 9999 !important;
+  filter: brightness(1.5) contrast(1.3) !important;
+}
+
+/* Debug outline to make sure the rider element is detected */
+.custom-rider-marker {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Make sure trails are visible */
+.rider-trail {
+  stroke-dasharray: 5, 10;
+  animation: fadeOut 1.5s forwards;
+  pointer-events: none;
+}
+
+@keyframes fadeOut {
+  from { opacity: 0.8; }
+  to { opacity: 0; }
+}
+
+/* Animation test - use this class to verify animations are working */
+.animation-test {
+  animation: rider-pulse 1s infinite, rider-glow 1s infinite;
+}
+
+/* Add a trail effect for moving riders */
+.custom-rider-marker::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: inherit;
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0.7;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.rider-moving .custom-rider-marker::after {
+  animation: trail-expand 0.5s ease-out forwards;
+}
+
+@keyframes trail-expand {
+  0% { transform: translate(-50%, -50%) scale(0); opacity: 0.7; }
+  100% { transform: translate(-50%, -50%) scale(3); opacity: 0; }
+}
+
+/* Enhanced trail effect - make it draw behind the rider */
+.rider-trail {
+  stroke-dasharray: 5, 10;
+  animation: fadeOut 1.5s forwards;
+  pointer-events: none;
+}
+
+@keyframes fadeOut {
+  from { opacity: 0.7; }
+  to { opacity: 0; }
+}
+
+/* Improved visual hierarchy for resting vs. moving riders */
+.custom-rider-marker {
+  transition: filter 0.3s ease;
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.rider-moving {
+  filter: brightness(1.2) contrast(1.2);
+}
+
+/* Animation for moving riders */
+@keyframes pulse-rider {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+/* Apply pulsing animation when moving */
+.rider-marker[aria-hidden="false"] .rider-dot {
+  animation: pulse-rider 1s infinite;
+}
+
+.rider-popup strong {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.rider-popup div {
+  font-size: 11px;
+  margin-bottom: 2px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.rider-popup div.actual-distance {
+  color: #2563EB; /* Blue for actual distance */
+  font-weight: 500;
+}
+
+.rider-popup div.distance-label {
+  font-size: 10px;
+  color: #6B7280;
+  width: 80px;
+}
+
+.rider-popup div.distance-value {
+  font-size: 11px;
+  font-weight: 500;
+  color: #1F2937;
+  text-align: right;
+}
+
+.rider-panel input[type="range"] {
+  height: 4px;
+}
+
+input[type="color"] {
+  -webkit-appearance: none;
+  border: none;
+  padding: 0;
+  background: none;
+}
+
+input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+input[type="color"]::-webkit-color-swatch {
+  border-radius: 3px;
+  border: 1px solid #ccc;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  height: 5px;
+  border-radius: 5px;
+  background: #d7dcdf;
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: #4B69FF;
+  cursor: pointer;
+}
+
+/* Enhanced waypoint styles */
+.waypoint-marker {
+  background-color: #8B5CF6; /* Purple-500 */
+  color: white;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: bold;
+  white-space: nowrap;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  border: 1px solid #7C3AED; /* Purple-600 */
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.waypoint-marker.waypoint-start {
+  background-color: #10B981; /* Green-500 */
+  border-color: #059669; /* Green-600 */
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 12px;
+}
+
+.waypoint-marker.waypoint-finish {
+  background-color: #EF4444; /* Red-500 */
+  border-color: #DC2626; /* Red-600 */
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 12px;
+}
+
+/* Special styling for checkpoints */
+.waypoint-marker.waypoint-checkpoint {
+  background-color: #10B981; /* Green-500 */
+  border-color: #059669; /* Green-600 */
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* Pulsing effect for checkpoints */
+.waypoint-checkpoint {
+  animation: checkpoint-pulse 2s infinite;
+}
+
+@keyframes checkpoint-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+  70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+/* Flag icon styles */
+.flag-icon {
+  margin-right: 4px;
+  font-size: 14px;
+}
+
+/* Add special start/finish marker styles */
+.waypoint-start-icon, .waypoint-finish-icon {
+  z-index: 1001; /* Make start/finish appear above other waypoints */
+}
+
+/* Create circular background for flag markers */
+.waypoint-start-icon .waypoint-marker:before,
+.waypoint-finish-icon .waypoint-marker:before {
+  content: '';
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background-color: white;
+  z-index: -1;
+  left: 4px;
+  top: -1px;
+}
+
+.waypoint-popup {
+  padding: 10px;
+  max-width: 200px;
+}
+
+.waypoint-popup strong {
+  display: block;
+  margin-bottom: 5px;
+  color: #8B5CF6;
+}
+
+.waypoint-popup div {
+  font-size: 12px;
+  margin-bottom: 3px;
+  color: #4B5563; /* Gray-600 */
+}
+
+.waypoint-notification {
+  background-color: rgba(139, 92, 246, 0.8); /* Purple-500 with opacity */
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+/* Leaderboard Styles */
+.leaderboard-panel {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  min-width: 320px;
+  max-width: 400px;
+  max-height: calc(100vh - 140px);
+  overflow-y: auto;
+}
+
+.leaderboard-panel table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.leaderboard-panel th {
+  position: sticky;
+  top: 0;
+  background-color: #f3f4f6;
+  padding: 8px 12px;
+  text-align: left;
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+}
+
+.leaderboard-panel th:hover {
+  background-color: #e5e7eb;
+}
+
+.leaderboard-panel td {
+  padding: 6px 12px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.leaderboard-panel tr:hover {
+  background-color: #f9fafb;
+}
+
+/* Waypoint leaderboard styles */
+.waypoint-leaderboard-btn {
+  background-color: #6366f1;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 11px;
+  cursor: pointer;
+  margin-top: 5px;
+}
+
+.waypoint-leaderboard-btn:hover {
+  background-color: #4f46e5;
+}
+
+.waypoint-leaderboard {
+  padding: 10px;
+  min-width: 250px;
+}
+
+.waypoint-leaderboard-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #4B69FF;
+  margin-bottom: 10px;
+  text-align: center;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.waypoint-leaderboard-empty {
+  text-align: center;
+  color: #6b7280;
+  font-size: 12px;
+  padding: 10px;
+}
+
+.waypoint-leaderboard-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.waypoint-leaderboard-table th,
+.waypoint-leaderboard-table td {
+  padding: 4px 8px;
+}
+
+.waypoint-leaderboard-table th {
+  background-color: #f3f4f6;
+  text-align: left;
+  font-weight: 600;
+}
+
+.waypoint-leaderboard-table tr:nth-child(even) {
+  background-color: #f9fafb;
+}
+
+.waypoint-leaderboard-position {
+  text-align: center;
+  font-weight: bold;
+  width: 30px;
+}
+
+.waypoint-leaderboard-name {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-width: 150px;
+}
+
+.waypoint-leaderboard-time {
+  text-align: right;
+  font-family: monospace;
+}
+
+.waypoint-leaderboard-close {
+  background-color: #e5e7eb;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.waypoint-leaderboard-close:hover {
+  background-color: #d1d5db;
+}
+
+/* Larger popup style for leaderboard */
+.waypoint-leaderboard-popup .leaflet-popup-content-wrapper {
+  padding: 0;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.waypoint-leaderboard-popup .leaflet-popup-content {
+  margin: 0;
+  min-width: 250px;
+}
+
+/* Highlight for top 3 positions */
+.waypoint-leaderboard-table tr:nth-child(1) .waypoint-leaderboard-position {
+  color: gold;
+}
+
+.waypoint-leaderboard-table tr:nth-child(2) .waypoint-leaderboard-position {
+  color: silver;
+}
+
+.waypoint-leaderboard-table tr:nth-child(3) .waypoint-leaderboard-position {
+  color: #cd7f32; /* bronze */
+}
+
+/* Enhanced route line styling for ultra-precise road following */
+.leaflet-interactive {
+  stroke-opacity: 0.95;
+  transition: stroke-width 0.2s ease, stroke-opacity 0.2s ease;
+}
+
+/* Add hover effect to see the route better */
+.leaflet-interactive:hover {
+  stroke-opacity: 1;
+  stroke-width: 6px !important;
+  cursor: pointer;
+  filter: drop-shadow(0px 0px 3px rgba(30, 64, 175, 0.4));
+}
+
+/* Route primary style */
+.route-primary {
+  stroke: #4B69FF;
+  filter: drop-shadow(0px 0px 2px rgba(75, 105, 255, 0.3));
+}
+
+/* Route secondary style - test routes */
+.route-secondary {
+  stroke: #DC2626;
+  filter: drop-shadow(0px 0px 2px rgba(220, 38, 38, 0.3));
+}
+
+/* Ultra-precise route style - highest quality */
+.route-ultra-precise {
+  stroke: #1E40AF;
+  stroke-width: 5px;
+  stroke-dasharray: none;
+  filter: drop-shadow(0px 0px 3px rgba(30, 64, 175, 0.4));
+}
+
+/* Glow effect for roads */
+.route-glow {
+  stroke-opacity: 0.2 !important;
+  filter: blur(3px);
+  pointer-events: none; /* Don't capture mouse events */
+}
+
+/* Route emphasis for currently active segments */
+.route-emphasis {
+  stroke: #FFD700 !important;
+  stroke-width: 7px !important;
+  stroke-opacity: 1;
+  animation: pulsate 2s infinite;
+  filter: drop-shadow(0px 0px 5px rgba(255, 215, 0, 0.6));
+  z-index: 9999 !important;
+}
+
+@keyframes pulsate {
+  0% { stroke-opacity: 0.7; }
+  50% { stroke-opacity: 1; }
+  100% { stroke-opacity: 0.7; }
+}
+
+/* Animation for route loading with a smooth reveal */
+@keyframes fadeIn {
+  from { opacity: 0; stroke-dashoffset: 1000; }
+  to { opacity: 1; stroke-dashoffset: 0; }
+}
+
+.route-primary, .route-secondary, .route-ultra-precise {
+  animation: fadeIn 1.2s ease-out forwards;
+}
+
+/* Route colors - can be adjusted for different route types */
+.route-highlighted {
+  stroke: #FFD700;
+  stroke-width: 6px;
+  stroke-opacity: 1;
+  filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.5));
+}
+
+/* Loading indicator for route data */
+.map-loading-indicator {
+  padding: 8px 12px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 4px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  font-size: 12px;
+  margin: 10px;
+}
+
+.loading-text {
+  display: flex;
+  align-items: center;
+}
+
+.loading-text::before {
+  content: '';
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 8px;
+  border: 2px solid #4B69FF;
+  border-radius: 50%;
+  border-top-color: transparent;
+  animation: map-spinner 1s linear infinite;
+}
+
+@keyframes map-spinner {
+  to { transform: rotate(360deg); }
+}
+
+/* Elevation Profile Styling */
+.elevation-profile {
+  background-color: rgba(255, 255, 255, 0.85);
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  width: 250px;
+  margin-bottom: 10px;
+}
+
+.elevation-profile h3 {
+  font-size: 14px;
+  font-weight: bold;
+  margin: 0 0 8px 0;
+  color: #2C3E50;
+}
+
+.elevation-stats {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  margin-bottom: 10px;
+  color: #4B5563;
+}
+
+.elevation-chart {
+  height: 100px;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+/* Enhanced rider elevation display */
+.rider-popup div.elevation {
+  color: #10B981;
+  font-weight: 500;
+}
+
+/* Color coding for elevation markers */
+.elevation-low {
+  color: #10B981 !important; /* Green */
+}
+
+.elevation-medium {
+  color: #FBBF24 !important; /* Yellow */
+}
+
+.elevation-high {
+  color: #EF4444 !important; /* Red */
+}
+
+/* Segment panel styles */
+.segments-panel {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  min-width: 220px;
+  max-width: 300px;
+}
+
+/* Segment item styles */
+.segment-item {
+  border-left-width: 4px;
+  padding-left: 8px;
+  transition: all 0.2s;
+}
+
+.segment-selected {
+  background-color: rgba(0, 0, 0, 0.05);
+  font-weight: 500;
+}
+
+/* Segment marker styles */
+.segment-marker-inner {
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+  white-space: nowrap;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.segment-marker-start .segment-marker-inner {
+  border-radius: 10px 0 0 10px;
+}
+
+.segment-marker-end .segment-marker-inner {
+  border-radius: 0 10px 10px 0;
+}
+
+/* Segment popup styles */
+.segment-popup h3 {
+  font-size: 14px;
+  font-weight: bold;
+  margin: 0 0 8px 0;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #eee;
+}
+
+.segment-popup div {
+  font-size: 12px;
+  margin-bottom: 3px;
+}
+
+/* Checkpoint panel styles */
+.checkpoint-panel {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  z-index: 1000;
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  min-width: 220px;
+  max-width: 300px;
+}
+
+/* Stage placement styles */
+.placing-stage {
+  cursor: crosshair !important;
+}
+
+.stage-marker-temp {
+  background-color: #10B981;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: bold;
+  white-space: nowrap;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.7; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.1); }
+  100% { opacity: 0.7; transform: scale(1); }
+}
+
+/* Add tooltip styles */
+.tooltip {
+  position: relative;
+  display: inline-block;
+  cursor: help;
+}
+
+.tooltip .tooltip-text {
+  visibility: hidden;
+  width: 200px;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltip:hover .tooltip-text {
+  visibility: visible;
+  opacity: 0.9;
+}
+
+/* Section dividers */
+.section-divider {
+  margin: 0.75rem 0;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* Checkpoint mode styles */
+.checkpoint-mode {
+  cursor: crosshair !important;
+}
+
+/* Add smaller text size for stage speeds */
+.text-2xs {
+  font-size: 0.65rem;
+}
+
+/* Finish notification styling */
+.finish-notification {
+  background-color: rgba(16, 185, 129, 0.9);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  border: 1px solid #047857;
+}
+
+.finish-notification strong {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.finish-popup .leaflet-popup-content-wrapper {
+  background: transparent;
+  box-shadow: none;
+}
+
+.finish-popup .leaflet-popup-content {
+  margin: 0;
+}
+
+.finish-popup .leaflet-popup-tip-container {
+  display: none;
+}
+
+/* Add animation for finish notification */
+@keyframes finish-pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.finish-notification {
+  animation: finish-pulse 1s infinite;
+}
+
+/* Additional styling for different checkpoint types */
+.start-checkpoint {
+  border-left: 3px solid #10B981; /* green-600 */
+}
+
+.finish-checkpoint {
+  border-left: 3px solid #EF4444; /* red-600 */
+}
+
+.intermediate-checkpoint {
+  border-left: 3px solid #3B82F6; /* blue-500 */
+}
+
+/* Enhance the visual distinction of checkpoint markers */
+.waypoint-marker.waypoint-checkpoint.waypoint-start {
+  background-color: #10B981; /* green-600 */
+  border-color: #059669; /* green-700 */
+  font-weight: bold;
+  padding: 4px 10px;
+  z-index: 1001; /* Make start/finish appear above other checkpoints */
+}
+
+.waypoint-marker.waypoint-checkpoint.waypoint-finish {
+  background-color: #EF4444; /* red-600 */
+  border-color: #DC2626; /* red-700 */
+  font-weight: bold;
+  padding: 4px 10px;
+  z-index: 1001;
+}
+
+/* Add arrow animation for Start marker */
+.waypoint-start {
+  position: relative;
+}
+
+.waypoint-start:after {
+  content: '→';
+  position: absolute;
+  right: -12px;
+  top: 50%;
+  transform: translateY(-50%);
+  animation: pulse-arrow 1s infinite;
+}
+
+@keyframes pulse-arrow {
+  0% { opacity: 0.5; right: -12px; }
+  50% { opacity: 1; right: -15px; }
+  100% { opacity: 0.5; right: -12px; }
+}
+
+/* Add flag animation for Finish marker */
+.waypoint-finish {
+  position: relative;
+}
+
+.waypoint-finish:before {
+  content: '🏁';
+  position: absolute;
+  left: -20px;
+  font-size: 14px;
+  animation: wave-flag 1.5s infinite;
+}
+
+@keyframes wave-flag {
+  0% { transform: rotate(-5deg); }
+  50% { transform: rotate(5deg); }
+  100% { transform: rotate(-5deg); }
+}
+
+/* Enhanced stage visualization */
+.route-stage {
+  opacity: 0.9;
+  transition: opacity 0.3s ease, filter 0.3s ease, weight 0.3s ease;
+  z-index: 400 !important; /* Make stages appear on top of the background route */
+  stroke-dasharray: none !important;
+  filter: drop-shadow(0px 0px 2px rgba(0, 0, 0, 0.3));
+}
+
+.route-stage-glow {
+  opacity: 0.2 !important;
+  z-index: 390 !important;
+  pointer-events: none; /* Don't capture mouse events on the glow */
+  stroke-dasharray: none !important;
+}
+
+.route-stage:hover {
+  opacity: 1;
+  filter: drop-shadow(0px 0px 4px rgba(0, 0, 0, 0.5));
+  stroke-width: 8px !important;
+  z-index: 410 !important;
+}
+
+/* Background route style */
+.route-background {
+  z-index: 380;
+  stroke-dasharray: none !important;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none; /* Don't capture mouse events to allow clicking through to stages */
+}
+
+/* Make stage colors more vibrant */
+.stage-item {
+  border-left-width: 6px !important; /* Make stage colors more prominent */
+  transition: all 0.2s;
+}
+
+.stage-selected, .stage-item:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  transform: translateX(2px);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Improved hover effect for stage items in the list */
+.stage-item:hover {
+  background-color: rgba(0,0,0,0.03);
+  cursor: pointer;
+}
+
+.stage-active {
+  background-color: rgba(0,0,0,0.05) !important;
+  font-weight: 500;
+}
+
+/* Make stage labels clearer */
+.stage-marker {
+  font-weight: bold;
+  text-shadow: 0px 0px 2px rgba(0, 0, 0, 0.7);
+  white-space: nowrap;
+  background-color: rgba(255, 255, 255, 0.7);
+  padding: 2px 6px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+/* Enhanced stage visualization */
+.route-stage {
+  opacity: 0.8;
+  transition: opacity 0.3s ease, filter 0.3s ease;
+}
+
+.route-stage:hover {
+  opacity: 1;
+  filter: drop-shadow(0px 0px 4px rgba(0, 0, 0, 0.5));
+}
+
+/* Stage colors should be more vibrant for better distinction */
+.stage-item {
+  border-left-width: 5px;
+  transition: all 0.2s;
+}
+
+.stage-selected, .stage-item:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  transform: translateX(2px);
+}
+
+/* Add glowing effect to the currently active stage when hovering */
+.stage-active {
+  animation: stage-pulse 1.5s infinite;
+}
+
+@keyframes stage-pulse {
+  0% { filter: drop-shadow(0px 0px 1px rgba(255, 255, 255, 0.7)); }
+  50% { filter: drop-shadow(0px 0px 4px rgba(255, 255, 255, 1)); }
+  100% { filter: drop-shadow(0px 0px 1px rgba(255, 255, 255, 0.7)); }
+}
+
+/* Make stage markers more visible */
+.stage-marker {
+  font-weight: bold;
+  text-shadow: 0px 0px 2px rgba(0, 0, 0, 0.5);
+  white-space: nowrap;
+}
+
+/* Simple base class for rider markers with no extra styling that might conflict */
+.custom-rider-marker {
+  /* These properties reset any Leaflet default styles that might interfere */
+  background: none !important;
+  border: none !important;
+  contain: none !important;
+  z-index: 1000 !important; /* Make riders appear on top of other map elements */
+}
+
+/* Debug info to ensure position updates are working */
+.position-debug {
+  background: rgba(0,0,0,0.7);
+  color: white;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-size: 10px;
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Real rider panel styles - moved below route selector */
+.real-rider-panel {
+  position: absolute;
+  top: 180px; /* Position below the route selector (giving enough space) */
+  right: 20px; /* Aligned with the route selector */
+  z-index: 1000;
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  min-width: 250px;
+  max-width: 300px;
+  max-height: calc(100vh - 300px); /* Prevent panel from being too tall */
+  overflow-y: auto; /* Add scrolling if content is too tall */
+}
+
+/* GPS marker styling */
+.simulated-gps-marker {
+  background: none !important;
+  border: none !important;
+}
+
+/* Real rider markers styling */
+.real-rider-marker {
+  background: none !important;
+  border: none !important;
+  z-index: 1000 !important;
+}
+
+.real-rider-icon {
+  transition: transform 0.3s ease;
+}
+
+.real-rider-icon:hover {
+  transform: scale(1.1);
+}
+
+/* Check-in notification styling */
+.checkin-notification {
+  background-color: rgba(16, 185, 129, 0.9); /* Green */
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 13px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  white-space: nowrap;
+}
+
+.checkin-popup .leaflet-popup-content-wrapper {
+  background: transparent;
+  box-shadow: none;
+}
+
+.checkin-popup .leaflet-popup-tip-container {
+  display: none;
+}
+
+.checkin-popup .leaflet-popup-content {
+  margin: 0;
+}
+
+/* Pulsing animation for GPS marker */
+@keyframes pulse {
+  0% { transform: scale(0.8); opacity: 0.7; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(0.8); opacity: 0.7; }
+}
+
+/* Checkpoint circle styles */
+.checkpoint-circle {
+  stroke-dasharray: 5, 10;
+  animation: dash 20s linear infinite;
+  transition: radius 0.3s ease;
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: 1000;
+  }
+}
+
+/* Improve visibility of checkpoint circles */
+.leaflet-overlay-pane path {
+  pointer-events: auto !important;
+}
+
+/* Make dashed lines more visible with animation */
+.leaflet-overlay-pane .leaflet-interactive {
+  transition: stroke-width 0.3s ease;
+}
+
+/* Custom pulsing effect for checkpoint circles */
+@keyframes pulse-circle {
+  0% { opacity: 0.7; stroke-width: 2px; }
+  50% { opacity: 1; stroke-width: 3px; }
+  100% { opacity: 0.7; stroke-width: 2px; }
+}
+
+/* Apply pulsing animation to checkpoint circles when in real rider mode */
+.real-rider-mode .leaflet-overlay-pane .leaflet-interactive[stroke="#10B981"] {
+  animation: pulse-circle 2s infinite;
+}
+
+/* Make checkpoint radius more visible */
+.leaflet-overlay-pane .leaflet-interactive[stroke="#10B981"] {
+  stroke-opacity: 0.9 !important;
+}
+
+/* Checkpoint circle styles */
+.checkpoint-circle {
+  stroke-dasharray: 5, 10;
+  animation: dash 20s linear infinite;
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: 1000;
+  }
+}
+
+/* Route error message styling */
+.route-error-message {
+  position: absolute;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  max-width: 90%;
+  width: 400px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateX(-50%) translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Teleportation animation effects */
+.teleport-flash {
+  animation: flash-animation 0.5s ease-out;
+}
+
+@keyframes flash-animation {
+  0% { 
+    filter: brightness(1);
+    transform: scale(1);
+  }
+  50% { 
+    filter: brightness(2);
+    transform: scale(1.3); 
+  }
+  100% { 
+    filter: brightness(1);
+    transform: scale(1); 
+  }
+}
+
+.teleport-ripple {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: transparent;
+  border: 3px solid #10B981;
+  opacity: 1;
+  animation: ripple 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+.teleport-ripple-icon {
+  background: none !important;
+  border: none !important;
+}
+
+/* Style for selected riders */
+.rider-selected {
+  background-color: rgba(59, 130, 246, 0.1); /* Light blue background */
+  border-left: 3px solid #3B82F6; /* Blue accent */
+}
+
+/* Enhance checkbox styling */
+input[type="checkbox"] {
+  accent-color: #3B82F6;
+  cursor: pointer;
+}
+
+/* Add styling for the new location info popup */
+.location-info-popup h4 {
+  margin-top: 0;
+  color: #2563eb;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 4px;
+  margin-bottom: 8px;
+}
+
+.location-info-popup .text-xs {
+  font-size: 0.75rem;
+}
+
+.location-info-popup .text-xs div {
+  margin-bottom: 4px;
+}
+
+.location-info-popup b {
+  color: #4b5563;
+}
+
+/* Style for checkpoint markers */
+.checkpoint-marker {
+  background-color: #EF4444; /* Red background */
+  color: white;
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  animation: checkpoint-pulse 2s infinite;
+  position: relative;
+}
+
+/* Center the SVG properly */
+.checkpoint-marker svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+  filter: drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.3));
+}
+
+/* Style for the checkpoint number */
+.checkpoint-number {
+  position: absolute;
+  bottom: -5px;
+  right: -5px;
+  background-color: white;
+  color: #EF4444;
+  font-size: 10px;
+  font-weight: bold;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #EF4444;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes checkpoint-pulse {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+  50% { transform: scale(1.05); box-shadow: 0 0 0 5px rgba(239, 68, 68, 0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+.checkpoint-popup h4 {
+  margin-top: 0;
+  color: #EF4444; /* Changed from blue to red to match marker */
+  margin-bottom: 8px;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 4px;
+  font-weight: bold;
+}
+
+/* Style for checkpoint pin markers */
+.checkpoint-pin {
+  position: relative;
+  width: 30px;
+  height: 42px;
+}
+
+.pin-head {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 30px;
+  height: 30px;
+  background-color: #EF4444;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  animation: checkpoint-pulse 2s infinite;
+}
+
+.pin-head svg {
+  transform: rotate(45deg);
+  filter: drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.3));
+}
+
+.pin-tail {
+  position: absolute;
+  top: 22px;
+  left: 15px;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 20px 0 0 1px;
+  border-color: rgba(0, 0, 0, 0.5) transparent transparent transparent;
+  z-index: -1;
+}
+
+/* Style for the checkpoint number in pin design */
+.checkpoint-pin .checkpoint-number {
+  position: absolute;
+  top: 30px;
+  left: 8px;
+  background-color: white;
+  color: #111827;
+  font-size: 10px;
+  font-weight: bold;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  z-index: 2;
+}
+
+.route-custom-popup .leaflet-popup-content {
+  margin: 10px 12px;
+}
+
+.view-route-btn {
+  background-color: #10B981;
+  color: white;
+  border-radius: 4px;
+  font-weight: 500;
+  width: 100%;
+  padding: 5px 10px;
+  transition: all 0.2s ease;
+}
+
+.view-route-btn:hover {
+  background-color: #059669 !important;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Style for the start checkpoint */
+.start-pin .pin-head {
+  background-color: #10B981 !important; /* Green */
+}
+
+/* Style for the finish checkpoint */
+.finish-pin .pin-head {
+  background-color: #EF4444 !important; /* Red */
+}
+
+/* Style for regular checkpoints */
+.intermediate-pin .pin-head {
+  background-color: #3B82F6 !important; /* Blue */
+}
+
+/* Start and finish marker styling for checkpoints that are always visible */
+.always-visible {
+  z-index: 1000 !important;
+}
+
+.checkpoint-pin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pin-head {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+  border: 2px solid white;
+}
+
+.pin-tail {
+  width: 2px;
+  height: 14px;
+  background-color: rgba(0,0,0,0.7);
+  margin-top: -2px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Start marker (green) */
+.start-pin .pin-head {
+  background-color: #10B981;
+}
+
+/* Finish marker (red) */
+.finish-pin .pin-head {
+  background-color: #EF4444;
+}
+
+/* Regular checkpoint (blue) */
+.checkpoint-pin:not(.start-pin):not(.finish-pin) .pin-head {
+  background-color: #3B82F6;
+}
+
+.checkpoint-number {
+  font-size: 12px;
+  font-weight: bold;
+  color: white;
+  text-shadow: 0 0 3px rgba(0,0,0,0.5);
+  margin-top: -22px;
+}

@@ -1,0 +1,8 @@
+<button 
+  type="button" 
+  class="time-format-btn" 
+  (click)="toggleTimeFormat()" 
+  [title]="use24HourFormat ? 'Switch to 12-hour format (AM/PM)' : 'Switch to 24-hour format'"
+>
+  {{ use24HourFormat ? '12h' : '24h' }}
+</button> 

@@ -1,0 +1,234 @@
+.check-in-container {
+  max-width: 600px;
+  margin: 30px auto;
+  padding: 20px;
+}
+
+.check-in-card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.check-in-header {
+  padding: 20px;
+  background-color: #0066cc;
+  color: white;
+  text-align: center;
+}
+
+.check-in-header h1 {
+  margin: 0 0 10px 0;
+  font-size: 24px;
+}
+
+.event-name {
+  font-size: 16px;
+  opacity: 0.9;
+}
+
+.checkpoint-image {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+}
+
+.checkpoint-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.checkpoint-details {
+  padding: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.detail-row {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.detail-row:last-child {
+  margin-bottom: 0;
+}
+
+.detail-label {
+  font-weight: 600;
+  color: #555;
+  width: 100px;
+  min-width: 100px;
+}
+
+.detail-value {
+  color: #333;
+}
+
+.check-in-section {
+  padding: 20px;
+  text-align: center;
+}
+
+.check-in-section h2 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #333;
+  font-size: 20px;
+}
+
+.instruction {
+  color: #666;
+  margin-bottom: 25px;
+  font-size: 15px;
+}
+
+.check-in-button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.check-in-button:hover {
+  background-color: #388E3C;
+}
+
+.error-message {
+  color: #d32f2f;
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+.success-section {
+  padding: 30px 20px;
+  text-align: center;
+  background-color: #e8f5e9;
+}
+
+.success-icon {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 15px;
+  background-color: #4CAF50;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.success-section h2 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: #2E7D32;
+  font-size: 22px;
+}
+
+.success-section p {
+  color: #388E3C;
+  margin-bottom: 25px;
+  font-size: 16px;
+}
+
+.continue-button {
+  background-color: #2196F3;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.continue-button:hover {
+  background-color: #1976D2;
+}
+
+.participant-info {
+  padding: 15px 20px;
+  background-color: #f5f5f5;
+  border-top: 1px solid #eee;
+  text-align: center;
+}
+
+.participant-name {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.participant-code {
+  color: #666;
+  font-size: 14px;
+}
+
+.navigation-links {
+  text-align: center;
+}
+
+.back-button {
+  background-color: transparent;
+  color: #0066cc;
+  border: 1px solid #0066cc;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.back-button:hover {
+  background-color: #f0f7ff;
+}
+
+/* Loading and error states */
+.loading-state,
+.error-state {
+  max-width: 500px;
+  margin: 50px auto;
+  text-align: center;
+  background-color: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.loading-state p {
+  color: #666;
+}
+
+.error-state h2 {
+  color: #d32f2f;
+  margin-top: 0;
+}
+
+.error-state p {
+  color: #666;
+  margin-bottom: 25px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .check-in-container {
+    padding: 10px;
+    margin: 15px auto;
+  }
+  
+  .check-in-header h1 {
+    font-size: 20px;
+  }
+  
+  .checkpoint-image {
+    height: 150px;
+  }
+}

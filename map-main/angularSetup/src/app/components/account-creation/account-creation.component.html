@@ -1,0 +1,119 @@
+<div class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+  <div class="max-w-md w-full bg-white rounded-lg shadow-xl p-8">
+    <div class="text-center">
+      <h1 class="text-3xl font-semibold text-gray-800 mb-2">Create Account</h1>
+      <p class="text-gray-600 mb-6">Create a new user account</p>
+    </div>
+    
+    <!-- Success Message -->
+    <div *ngIf="showSuccessMessage" class="mb-6 p-4 bg-green-100 text-green-800 rounded">
+      <div class="flex items-center">
+        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+        </svg>
+        <span class="font-medium">{{ successMessage || 'Account created successfully!' }}</span>
+      </div>
+    </div>
+    
+    <!-- Error Message -->
+    <div *ngIf="showErrorMessage" class="mb-6 bg-red-100 border border-red-300 text-red-700 px-4 py-3 rounded">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <svg class="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+          </svg>
+        </div>
+        <div class="ml-3">
+          <p class="font-medium">Error!</p>
+          <p class="text-sm">{{ errorMessage }}</p>
+        </div>
+      </div>
+    </div>
+    
+    <form [formGroup]="accountForm" (ngSubmit)="onSubmit()">
+      <div class="space-y-4">
+        <!-- Email Field -->
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+          <input type="email" id="email" formControlName="email" 
+                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                 [ngClass]="{'border-red-300': accountForm.get('email')?.invalid && accountForm.get('email')?.touched}">
+          <div *ngIf="accountForm.get('email')?.invalid && accountForm.get('email')?.touched" class="text-red-600 text-sm mt-1">
+            <span *ngIf="accountForm.get('email')?.errors?.['required']">Email is required</span>
+            <span *ngIf="accountForm.get('email')?.errors?.['email']">Please enter a valid email address</span>
+          </div>
+        </div>
+        
+        <!-- Name Field -->
+        <div>
+          <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+          <input type="text" id="name" formControlName="name"
+                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                 [ngClass]="{'border-red-300': accountForm.get('name')?.invalid && accountForm.get('name')?.touched}">
+          <div *ngIf="accountForm.get('name')?.invalid && accountForm.get('name')?.touched" class="text-red-600 text-xs mt-1">
+            Name is required
+          </div>
+        </div>
+        
+        <!-- Password Field -->
+        <div>
+          <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+          <input type="password" id="password" formControlName="password"
+                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                 [ngClass]="{'border-red-300': accountForm.get('password')?.invalid && accountForm.get('password')?.touched}">
+          <div *ngIf="accountForm.get('password')?.invalid && accountForm.get('password')?.touched" class="text-red-600 text-sm mt-1">
+            <span *ngIf="accountForm.get('password')?.errors?.['required']">Password is required</span>
+            <span *ngIf="accountForm.get('password')?.errors?.['minlength']">Password must be at least 8 characters</span>
+          </div>
+          <div class="text-gray-500 text-xs mt-1">Password must be at least 8 characters</div>
+        </div>
+        
+        <!-- Confirm Password Field -->
+        <div>
+          <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+          <input type="password" id="confirmPassword" formControlName="confirmPassword"
+                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                 [ngClass]="{'border-red-300': (accountForm.get('confirmPassword')?.invalid || accountForm.hasError('notMatching')) && accountForm.get('confirmPassword')?.touched}">
+          <div *ngIf="accountForm.get('confirmPassword')?.invalid && accountForm.get('confirmPassword')?.touched" class="text-red-600 text-xs mt-1">
+            Confirm password is required
+          </div>
+          <div *ngIf="accountForm.hasError('notMatching') && accountForm.get('confirmPassword')?.touched" class="text-red-600 text-xs mt-1">
+            Passwords do not match
+          </div>
+        </div>
+        
+        <!-- Role Field (now visible to all users) -->
+        <div>
+          <label for="role" class="block text-sm font-medium text-gray-700 mb-1">Account Role</label>
+          <select id="role" formControlName="role"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="user">User</option>
+            <option value="organizer">Organizer</option>
+            <option value="admin">Administrator</option>
+          </select>
+        </div>
+        
+      </div>
+      
+      <!-- Submit Button -->
+      <div class="mt-6">
+        <button type="submit" 
+                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                [disabled]="isSubmitting || accountForm.invalid">
+          <span *ngIf="!isSubmitting">Create Account</span>
+          <span *ngIf="isSubmitting" class="flex items-center justify-center">
+            <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Creating...
+          </span>
+        </button>
+      </div>
+    </form>
+    
+    <div class="mt-6 text-center">
+      <p class="text-sm text-gray-600">Already have an account? <a routerLink="/login" class="font-medium text-blue-600 hover:text-blue-500">Sign in</a></p>
+    </div>
+  </div>
+</div>

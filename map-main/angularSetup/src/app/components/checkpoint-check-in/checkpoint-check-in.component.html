@@ -1,0 +1,70 @@
+<div class="check-in-container" *ngIf="!loading && event && checkpoint">
+  <div class="check-in-card">
+    <div class="check-in-header">
+      <h1>{{ checkpoint.name }}</h1>
+      <div class="event-name">{{ event.name }}</div>
+    </div>
+    
+    <!-- Checkpoint image if available -->
+    <div class="checkpoint-image" *ngIf="checkpoint.imagePreviewUrl">
+      <img [src]="checkpoint.imagePreviewUrl" alt="{{ checkpoint.name }}">
+    </div>
+    
+    <div class="checkpoint-details">
+      <div class="detail-row">
+        <span class="detail-label">Distans:</span>
+        <span class="detail-value">{{ checkpoint.distance }} km</span>
+      </div>
+      
+      <div class="detail-row" *ngIf="checkpoint.location">
+        <span class="detail-label">Plats:</span>
+        <span class="detail-value">{{ checkpoint.location }}</span>
+      </div>
+      
+      <div class="detail-row" *ngIf="checkpoint.openingTime">
+        <span class="detail-label">Öppettider:</span>
+        <span class="detail-value">{{ formatTime(checkpoint.openingTime) }} - {{ formatTime(checkpoint.closingTime) }}</span>
+      </div>
+    </div>
+    
+    <div class="check-in-section" *ngIf="!checkInSuccess">
+      <h2>Incheckning</h2>
+      <p class="instruction">När du har nått denna kontrollpunkt, klicka på knappen nedan för att checka in.</p>
+      
+      <button class="check-in-button" (click)="checkIn()">Checka in på {{ checkpoint.name }}</button>
+      
+      <div class="error-message" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
+    </div>
+    
+    <div class="success-section" *ngIf="checkInSuccess">
+      <div class="success-icon">✓</div>
+      <h2>Incheckning slutförd!</h2>
+      <p>Du har checkat in vid {{ checkpoint.name }} kl. {{ formatTime(checkInTime) }}</p>
+      
+      <button class="continue-button" (click)="backToEvent()">Fortsätt till evenemang</button>
+    </div>
+    
+    <div class="participant-info" *ngIf="participant">
+      <div class="participant-name">{{ participant.firstName }} {{ participant.lastName }}</div>
+      <div class="participant-code">Kod: {{ participant.registrationCode }}</div>
+    </div>
+  </div>
+  
+  <div class="navigation-links">
+    <button class="back-button" (click)="backToEvent()">Tillbaka till evenemang</button>
+  </div>
+</div>
+
+<!-- Loading state -->
+<div class="loading-state" *ngIf="loading">
+  <p>Laddar kontrollpunkt...</p>
+</div>
+
+<!-- Error state -->
+<div class="error-state" *ngIf="!loading && errorMessage">
+  <h2>Ett fel uppstod</h2>
+  <p>{{ errorMessage }}</p>
+  <button class="back-button" (click)="backToEvent()">Tillbaka till evenemang</button>
+</div>

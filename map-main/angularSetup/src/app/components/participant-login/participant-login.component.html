@@ -1,0 +1,60 @@
+<div class="login-container" *ngIf="event">
+  <div class="login-card">
+    <div class="event-header">
+      <h2>{{ event.name }}</h2>
+      <div class="event-meta">
+        <p><strong>Datum:</strong> {{ formatDate(event.date) }}</p>
+        <p><strong>Start:</strong> {{ event.time }}</p>
+        <p><strong>Plats:</strong> {{ event.location }}</p>
+      </div>
+      
+      <!-- Event image if available -->
+      <div class="event-image" *ngIf="event.imagePreviewUrl">
+        <img [src]="event.imagePreviewUrl" alt="{{ event.name }}">
+      </div>
+    </div>
+    
+    <div class="login-form-container">
+      <h3>Deltagare Login</h3>
+      <p class="instruction">Ange din registreringskod för att logga in som deltagare i detta evenemang.</p>
+      
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label for="registrationCode">Registreringskod</label>
+          <input 
+            type="text" 
+            id="registrationCode" 
+            formControlName="registrationCode" 
+            [ngClass]="{ 'is-invalid': submitted && f['registrationCode'].errors }"
+            autocomplete="off"
+            placeholder="Ange din registreringskod"
+          >
+          <div *ngIf="submitted && f['registrationCode'].errors" class="error-message">
+            <div *ngIf="f['registrationCode'].errors['required']">Registreringskod krävs</div>
+          </div>
+        </div>
+        
+        <div class="login-error" *ngIf="loginError">
+          {{ loginError }}
+        </div>
+        
+        <div class="button-group">
+          <button type="submit" class="login-button" [disabled]="loading">
+            {{ loading ? 'Loggar in...' : 'Logga in' }}
+          </button>
+          <a [routerLink]="['/events']" class="back-link">Tillbaka till Evenemang</a>
+        </div>
+      </form>
+      
+      <div class="registration-link">
+        <p>Inte registrerad än? <a [routerLink]="['/events/register', event.id]">Registrera dig här</a></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="not-found" *ngIf="!event">
+  <h2>Evenemang hittades inte</h2>
+  <p>Det begärda evenemanget kunde inte hittas.</p>
+  <a [routerLink]="['/events']" class="back-link">Tillbaka till Evenemang</a>
+</div>

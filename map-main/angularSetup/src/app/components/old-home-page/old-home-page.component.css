@@ -1,0 +1,8 @@
+/* Custom styles that can't be represented with Tailwind utility classes */
+/* Empty for now as we're using Tailwind utility classes in the HTML */
+
+/* Hide the original navbar when on home page */
+:host ::ng-deep app-navbar,
+:host ::ng-deep .headerless-navbar {
+  display: none !important;
+} 

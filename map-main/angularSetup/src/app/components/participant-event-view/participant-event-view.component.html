@@ -1,0 +1,127 @@
+<div class="event-view-container" *ngIf="!loading && event && participant">
+  <div class="event-header">
+    <div class="event-details">
+      <h1>{{ event.name }}</h1>
+      <div class="event-meta">
+        <div class="meta-item">
+          <span class="meta-label">Datum:</span>
+          <span class="meta-value">{{ formatDate(event.date) }}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Start:</span>
+          <span class="meta-value">{{ event.time }}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Distans:</span>
+          <span class="meta-value">{{ event.distance }} km</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Plats:</span>
+          <span class="meta-value">{{ event.location }}</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Event image if available -->
+    <div class="event-image" *ngIf="event.imagePreviewUrl">
+      <img [src]="event.imagePreviewUrl" alt="{{ event.name }}">
+    </div>
+  </div>
+  
+  <div class="participant-info">
+    <h2>Din information</h2>
+    <div class="participant-details">
+      <div class="participant-detail">
+        <span class="detail-label">Deltagare:</span>
+        <span class="detail-value">{{ participant.firstName }} {{ participant.lastName }}</span>
+      </div>
+      <div class="participant-detail">
+        <span class="detail-label">Klubb:</span>
+        <span class="detail-value">{{ participant.club || '-' }}</span>
+      </div>
+      <div class="participant-detail">
+        <span class="detail-label">Registreringskod:</span>
+        <span class="detail-value">{{ participant.registrationCode }}</span>
+      </div>
+    </div>
+    <button class="logout-button" (click)="logout()">Logga ut</button>
+  </div>
+  
+  <div class="checkpoints-section">
+    <h2>Kontrollpunkter</h2>
+    <p class="instruction">Klicka på "Checka in" när du når en kontrollpunkt.</p>
+    
+    <div class="checkpoints-list">
+      <div class="checkpoint-card" *ngFor="let checkpoint of checkpoints; let i = index">
+        <!-- Checkpoint image if available -->
+        <div class="checkpoint-image" *ngIf="checkpoint.imagePreviewUrl">
+          <img [src]="checkpoint.imagePreviewUrl" alt="{{ checkpoint.name }}">
+        </div>
+        
+        <div class="checkpoint-details">
+          <h3>{{ checkpoint.name }}</h3>
+          <div class="checkpoint-meta">
+            <div class="checkpoint-detail">
+              <span class="detail-label">Distans:</span>
+              <span class="detail-value">{{ checkpoint.distance }} km</span>
+            </div>
+            <div class="checkpoint-detail">
+              <span class="detail-label">Plats:</span>
+              <span class="detail-value">{{ checkpoint.location || '-' }}</span>
+            </div>
+            <div class="checkpoint-detail" *ngIf="checkpoint.openingTime">
+              <span class="detail-label">Öppnar:</span>
+              <span class="detail-value">{{ formatCheckInTime(checkpoint.openingTime) }}</span>
+            </div>
+            <div class="checkpoint-detail" *ngIf="checkpoint.closingTime">
+              <span class="detail-label">Stänger:</span>
+              <span class="detail-value">{{ formatCheckInTime(checkpoint.closingTime) }}</span>
+            </div>
+          </div>
+          
+          <div class="checkpoint-status" [ngClass]="getCheckpointStatus(i)">
+            <div class="status-icon"></div>
+            <div class="status-text">
+              <span *ngIf="getCheckpointStatus(i) === 'pending'">Inte passerad</span>
+              <span *ngIf="getCheckpointStatus(i) === 'checked-in'">
+                Incheckad: {{ formatCheckInTime(getCheckpointTime(i)) }}
+              </span>
+              <span *ngIf="getCheckpointStatus(i) === 'missed'">Missad</span>
+            </div>
+          </div>
+          
+          <button 
+            class="check-in-button" 
+            [disabled]="getCheckpointStatus(i) === 'checked-in'"
+            (click)="checkIn(i)"
+          >
+            {{ getCheckpointStatus(i) === 'checked-in' ? 'Incheckad' : 'Checka in' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="navigation-links">
+    <a [routerLink]="['/events']" class="back-link">Tillbaka till eventlista</a>
+  </div>
+</div>
+
+<!-- Loading state -->
+<div class="loading-state" *ngIf="loading">
+  <p>Laddar evenemang...</p>
+</div>
+
+<!-- Error state -->
+<div class="error-state" *ngIf="!loading && errorMessage">
+  <h2>Ett fel uppstod</h2>
+  <p>{{ errorMessage }}</p>
+  <a [routerLink]="['/events']" class="back-link">Tillbaka till eventlista</a>
+</div>
+
+<!-- Not logged in -->
+<div class="not-logged-in" *ngIf="!loading && !participant">
+  <h2>Inte inloggad</h2>
+  <p>Du måste logga in för att se ditt evenemang.</p>
+  <a [routerLink]="['/events']" class="back-link">Tillbaka till eventlista</a>
+</div>

@@ -1,0 +1,11 @@
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Give content a top margin to account for potential navbar appearance */
+router-outlet {
+  display: block;
+  margin-top: 5px;
+}

@@ -1,0 +1,71 @@
+<div class="startlist-page" *ngIf="event">
+  <div class="container">
+    <div class="event-header">
+      <h1>Startlista: {{ event.name }}</h1>
+      <div class="event-details">
+        <div class="detail-item">
+          <span class="icon">📅</span> {{ formatDate(event.date) }}
+        </div>
+        <div class="detail-item">
+          <span class="icon">🕒</span> {{ event.time }}
+        </div>
+        <div class="detail-item">
+          <span class="icon">📍</span> {{ event.location }}
+        </div>
+        <div class="detail-item">
+          <span class="icon">🚴</span> {{ event.distance }} KM
+        </div>
+      </div>
+    </div>
+
+    <div class="startlist-content">
+      <div class="register-banner" *ngIf="participants.length > 0">
+        <p>{{ participants.length }} anmälda deltagare</p>
+        <a [routerLink]="['/events/register', event.id]" class="register-button">
+          Anmäl dig nu
+        </a>
+      </div>
+      
+      <div class="empty-startlist" *ngIf="participants.length === 0">
+        <div class="empty-icon">👥</div>
+        <h2>Inga anmälda deltagare än</h2>
+        <p>Bli den första att anmäla dig till detta evenemang!</p>
+        <a [routerLink]="['/events/register', event.id]" class="register-button">
+          Anmäl dig nu
+        </a>
+      </div>
+
+      <div class="participants-table-wrapper" *ngIf="participants.length > 0">
+        <table class="participants-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Namn</th>
+              <th>Klubb</th>
+              <th>Anmälningsdatum</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let participant of participants; let i = index">
+              <td class="participant-number">{{ i + 1 }}</td>
+              <td class="participant-name">{{ participant.firstName }} {{ participant.lastName }}</td>
+              <td class="participant-club">{{ participant.club || '-' }}</td>
+              <td class="participant-date">{{ formatRegistrationDate(participant.registrationDate) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="action-buttons">
+        <a routerLink="/events" class="back-button">Tillbaka till evenemang</a>
+        <a *ngIf="event.routeLink" [href]="event.routeLink" target="_blank" class="route-button">Visa bana</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="not-found" *ngIf="!event">
+  <h2>Evenemang hittades inte</h2>
+  <p>Detta evenemang finns inte eller har tagits bort.</p>
+  <button class="btn-primary" routerLink="/events">Tillbaka till Cykelevenemang</button>
+</div>

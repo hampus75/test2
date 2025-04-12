@@ -1,0 +1,247 @@
+/* Main container */
+.events-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 15px;
+  font-family: Arial, sans-serif;
+  background-color: #f5f5f5;
+}
+
+/* Header */
+.header-logo {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.header-logo h1 {
+  font-size: 28px;
+  color: #0066cc;
+  margin: 0;
+  font-weight: 600;
+}
+
+/* Introduction text */
+.events-intro {
+  margin-bottom: 40px;
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #333;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+/* Month sections */
+.events-by-month {
+  margin-bottom: 50px;
+}
+
+.month-header {
+  font-size: 22px;
+  color: #0066cc;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #0066cc;
+}
+
+/* Event list */
+.event-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 25px;
+}
+
+/* Event card */
+.event-card {
+  border-radius: 8px;
+  border: none;
+  padding: 20px;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+}
+
+.event-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Distance badge */
+.event-distance-badge {
+  position: absolute;
+  top: -10px;
+  right: 20px;
+  background-color: #0066cc;
+  color: white;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Event title */
+.event-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #0066cc;
+  margin: 0 0 15px 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ddd;
+  padding-right: 60px; /* Make room for the distance badge */
+}
+
+/* Event meta (date, time, location with icons) */
+.event-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #555;
+}
+
+.meta-icon {
+  margin-right: 8px;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* Event details */
+.event-details {
+  display: grid;
+  grid-template-columns: 1fr;
+  row-gap: 5px;
+  margin-bottom: 15px;
+}
+
+.detail-row {
+  display: flex;
+  margin-bottom: 5px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.detail-label {
+  width: 110px;
+  min-width: 110px;
+  font-weight: 600;
+  color: #555;
+}
+
+.detail-value {
+  flex: 1;
+  color: #333;
+}
+
+/* Action links */
+.event-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px solid #eee;
+}
+
+.action-link {
+  text-decoration: none;
+  color: #0066cc;
+  font-size: 14px;
+  padding: 6px 12px;
+  background-color: #f0f7ff;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  text-align: center;
+  display: flex;
+  align-items: center;
+}
+
+.action-link:hover {
+  background-color: #d9e9ff;
+}
+
+.action-icon {
+  margin-right: 5px;
+}
+
+.login-link {
+  background-color: #4CAF50;
+  color: white;
+  font-weight: bold;
+}
+
+.login-link:hover {
+  background-color: #45a049;
+}
+
+/* Delete button */
+.delete-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: transparent;
+  color: #d32f2f;
+  border: 1px solid #ddd;
+  border-radius: 50%;
+  height: 28px;
+  width: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  opacity: 0.7;
+}
+
+.delete-button:hover {
+  background-color: #d32f2f;
+  color: white;
+  border-color: #d32f2f;
+  opacity: 1;
+}
+
+/* Responsive design */
+@media (min-width: 768px) {
+  .event-list {
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  }
+  
+  .event-meta {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .event-list {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .event-list {
+    grid-template-columns: 1fr;
+  }
+  
+  .event-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .action-link {
+    display: flex;
+    justify-content: center;
+  }
+}
